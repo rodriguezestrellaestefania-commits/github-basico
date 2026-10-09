@@ -8,7 +8,7 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Comparar DEV_TOKEN
-        shell: pwsh
+        shell: powershell
         env:
           DEV_TOKEN: ${{ secrets.DEV_TOKEN }}
         run: |
