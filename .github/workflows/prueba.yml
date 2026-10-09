@@ -1,0 +1,20 @@
+
+name: Prueba de tokens
+
+on: push
+
+jobs:
+  comprobar-tokens:
+    runs-on: self-hosted
+    steps:
+      - name: Comparar DEV_TOKEN
+        shell: pwsh
+        env:
+          DEV_TOKEN: ${{ secrets.DEV_TOKEN }}
+        run: |
+          if ($env:DEV_TOKEN -eq $env:LOCAL_DEV_TOKEN) {
+            Write-Host "Los tokens coinciden"
+          } else {
+            Write-Host "Los tokens NO coinciden"
+            exit 1
+          }
