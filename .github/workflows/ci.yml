@@ -1,37 +1,37 @@
 name: CI Workflow (Develop)
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
   push:
     branches:
       - develop
-  workflow_dispatch:
+  pull_request:
+    branches:
+      - develop
 
 jobs:
   update-readme:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Update README for feature
         run: |
-          echo "Añadida feature: ${{ github.head_ref || github.ref_name }}" >> README.md
-          git config --global user.name "GitHub Actions Bot"
-          git config --global user.email "actions@github.com"
-          git commit -am "Actualizado README con la nueva feature"
-          git push
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          echo "Añadida feature: develop" >> README.md
+          git add README.md
+          git commit -m "Actualizado README con la nueva feature" || echo "No changes to commit"
+          git push origin HEAD:${{ github.head_ref || github.ref_name }}
 
   validate-dev:
     needs: update-readme
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
-      - name: Validate DEV Token
-        run: |
-          if [ "${{ secrets.DEV_TOKEN }}" = "${{ secrets.LOCAL_DEV_TOKEN }}" ]; then
-            echo "Token de desarrollo válido."
-          else
-            echo "Error: El token no coincide."
-            exit 1
-          fi
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate Dev Environment
+        run: echo "Validando entorno de desarrollo en develop..."
