@@ -23,8 +23,8 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           echo "Añadida feature: develop" >> README.md
           git add README.md
-          git commit -m "Actualizado README con la nueva feature" || echo "No changes to commit"
-          git push origin HEAD:${{ github.head_ref || github.ref_name }}
+          git diff --quiet && git diff --staged --quiet || git commit -m "Actualizado README con la nueva feature"
+          git push origin HEAD:${{ github.head_ref || github.ref_name }} || echo "Nothing to push"
 
   validate-dev:
     needs: update-readme
